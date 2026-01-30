@@ -1,56 +1,146 @@
-{% extends 'base/base.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Bater Ponto</title>
 
-{% block title %}Meu Projeto{% endblock title %}
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
 
-{% block content %}
-<h1>Oi</h1>
+    <style>
+        video, canvas {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
 
-<p>Hora atual: {{ hora_atual|date:"d/m/Y H:i:s" }}</p>
+        #map {
+            height: 300px;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
 
-<button onclick="pedirPermissoes()">Enviar Localização</button>
+        button {
+            padding: 10px 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
 
-<p id="resultado"></p>
-{% endblock content %}
+<h2>Bater Ponto</h2>
 
-{% block extrascript %}
+<button id="btnBater">Bater ponto</button>
+
+<div id="cameraArea" style="display:none;">
+    <video id="video" autoplay></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <br>
+    <button id="btnFoto">Tirar foto</button>
+    <button id="btnConfirmar" style="display:none;">✅ Confirmar</button>
+    <button id="btnRefazer" style="display:none;">🔄 Tirar novamente</button>
+</div>
+
+<p id="status"></p>
+
+<div id="map" style="display:none;"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
-function pedirPermissoes() {
+let latitude = null;
+let longitude = null;
+let fotoBlob = null;
+document.getElementById("btnBater").onclick = async () => {
+    document.getElementById("status").innerText = "Obtendo localização...";
 
-    // 📍 LOCALIZAÇÃO
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+        latitude = pos.coords.latitude;
+        longitude = pos.coords.longitude;
 
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
+        document.getElementById("cameraArea").style.display = "block";
 
-                fetch("/api/localizacao/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        latitude: latitude,
-                        longitude: longitude
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("resultado").innerHTML =
-                        `Latitude: ${data.latitude}<br>
-                         Longitude: ${data.longitude}<br>
-                         IP: ${data.ip}`;
-                });
+        const video = document.getElementById("video");
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
 
-            },
-            function(error) {
-                alert("Permissão de localização negada");
-            }
-        );
+        document.getElementById("status").innerText = "Tire a foto para confirmar o ponto";
+
+    }, () => {
+        alert("Não foi possível obter a localização");
+    });
+};
+
+document.getElementById("btnFoto").onclick = () => {
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0);
+
+    canvas.style.display = "block";
+    video.style.display = "none";
+
+    canvas.toBlob(blob => {
+        fotoBlob = blob;
+    });
+
+    document.getElementById("btnFoto").style.display = "none";
+    document.getElementById("btnConfirmar").style.display = "inline";
+    document.getElementById("btnRefazer").style.display = "inline";
+};
+
+document.getElementById("btnRefazer").onclick = () => {
+    document.getElementById("canvas").style.display = "none";
+    document.getElementById("video").style.display = "block";
+
+    document.getElementById("btnFoto").style.display = "inline";
+    document.getElementById("btnConfirmar").style.display = "none";
+    document.getElementById("btnRefazer").style.display = "none";
+};
+
+document.getElementById("btnConfirmar").onclick = async () => {
+    const formData = new FormData();
+    formData.append("latitude", latitude);
+    formData.append("longitude", longitude);
+    formData.append("foto", fotoBlob);
+
+    const resp = await fetch("/api/bater-ponto/", {
+        method: "POST",
+        body: formData
+    });
+
+    if (resp.ok) {
+        document.getElementById("status").innerText = "✅ Ponto batido com sucesso!";
+        mostrarMapa(latitude, longitude);
     } else {
-        alert("Geolocalização não suportada");
+        document.getElementById("status").innerText = "❌ Erro ao bater ponto";
     }
+};
+
+// MAPA
+function mostrarMapa(lat, lng) {
+    document.getElementById("map").style.display = "block";
+
+    const map = L.map('map').setView([lat, lng], 16);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    L.marker([lat, lng]).addTo(map)
+        .bindPopup("Local do ponto")
+        .openPopup();
 }
 </script>
-{% endblock extrascript %}
+
+</body>
+</html>
