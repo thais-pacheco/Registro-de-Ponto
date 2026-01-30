@@ -1,11 +1,56 @@
 {% extends 'base/base.html' %}
 {% load static %}
+
 {% block title %}Meu Projeto{% endblock title %}
-{% block extracss %}
-<!-- <link rel="stylesheet" href="{% static 'css/teste.css' %}"> -->
-{% endblock extracss %}
+
 {% block content %}
 <h1>Oi</h1>
+
 <p>Hora atual: {{ hora_atual|date:"d/m/Y H:i:s" }}</p>
+
+<button onclick="pedirPermissoes()">Enviar Localização</button>
+
+<p id="resultado"></p>
 {% endblock content %}
 
+{% block extrascript %}
+<script>
+function pedirPermissoes() {
+
+    // 📍 LOCALIZAÇÃO
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+
+                fetch("/api/localizacao/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        latitude: latitude,
+                        longitude: longitude
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("resultado").innerHTML =
+                        `Latitude: ${data.latitude}<br>
+                         Longitude: ${data.longitude}<br>
+                         IP: ${data.ip}`;
+                });
+
+            },
+            function(error) {
+                alert("Permissão de localização negada");
+            }
+        );
+    } else {
+        alert("Geolocalização não suportada");
+    }
+}
+</script>
+{% endblock extrascript %}

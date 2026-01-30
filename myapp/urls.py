@@ -1,7 +1,7 @@
-from django.contrib import admin
 from django.urls import path
-from myapp import views
+from . import views
 
 urlpatterns = [
-    path('', views.mysite, name='Default Home Page'),
+    path('', views.mysite, name='mysite'),
+    path('api/localizacao/', views.registrar_localizacao, name='registrar_localizacao'),
 ]
