@@ -1,0 +1,11 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}Meu Projeto{% endblock title %}
+{% block extracss %}
+<!-- <link rel="stylesheet" href="{% static 'css/teste.css' %}"> -->
+{% endblock extracss %}
+{% block content %}
+<h1>Oi</h1>
+<p>Hora atual: {{ hora_atual|date:"d/m/Y H:i:s" }}</p>
+{% endblock content %}
+
