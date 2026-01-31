@@ -37,7 +37,7 @@ def bater_ponto(request):
     hora = timezone.localtime()
 
     nome_arquivo = f"{uuid.uuid4()}.png"
-    pasta = os.path.join(settings.MEDIA_ROOT)
+    pasta = os.path.join(settings.MEDIA_ROOT, 'fotos')
 
     os.makedirs(pasta, exist_ok=True)
 
