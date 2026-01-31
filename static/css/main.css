@@ -1,0 +1,349 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  max-width: 450px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 35px;
+  box-shadow: 0 8px 32px rgba(50, 112, 166, 0.3);
+  border: 1px solid rgba(50, 112, 166, 0.2);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header h2 {
+  font-size: 24px;
+  background: linear-gradient(135deg, #3270a6 0%, #66b3ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.clock {
+  font-size: 42px;
+  font-weight: 300;
+  color: white;
+  letter-spacing: 2px;
+}
+
+.date {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 8px;
+}
+
+button {
+  width: 100%;
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+button i {
+  margin-right: 8px;
+}
+
+#btnBater {
+  background: linear-gradient(135deg, #3270a6 0%, #2557a6 100%);
+  color: white;
+  box-shadow: 0 4px 20px rgba(50, 112, 166, 0.4);
+}
+
+#btnBater:hover {
+  box-shadow: 0 6px 30px rgba(50, 112, 166, 0.6);
+}
+
+#cameraArea {
+  margin-top: 25px;
+}
+
+video,
+canvas {
+  width: 100%;
+  border-radius: 12px;
+  margin-top: 15px;
+  box-shadow: 0 4px 20px rgba(50, 112, 166, 0.3);
+  border: 2px solid rgba(50, 112, 166, 0.3);
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.button-group button {
+  flex: 1;
+}
+
+#btnFoto {
+  background: linear-gradient(135deg, #3270a6 0%, #2557a6 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(50, 112, 166, 0.4);
+}
+
+#btnFoto:hover {
+  box-shadow: 0 6px 25px rgba(50, 112, 166, 0.6);
+}
+
+#btnConfirmar {
+  background: linear-gradient(135deg, #28a745 0%, #20863a 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+#btnConfirmar:hover {
+  box-shadow: 0 6px 25px rgba(40, 167, 69, 0.6);
+}
+
+#btnRefazer {
+  background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+  color: #1a1a2e;
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+}
+
+#btnRefazer:hover {
+  box-shadow: 0 6px 25px rgba(255, 193, 7, 0.6);
+}
+
+#status {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(50, 112, 166, 0.1);
+  border: 1px solid rgba(50, 112, 166, 0.3);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+#status i {
+  font-size: 16px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+  border-radius: 20px;
+  padding: 35px;
+  max-width: 550px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(50, 112, 166, 0.5);
+  border: 2px solid #3270a6;
+  animation: slideUp 0.4s ease;
+}
+
+.modal-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.modal-header h3 {
+  font-size: 22px;
+  background: linear-gradient(135deg, #3270a6 0%, #66b3ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+}
+
+.success-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 15px;
+  background: linear-gradient(135deg, #28a745 0%, #20863a 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  animation: scaleIn 0.5s ease;
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.info-grid {
+  display: grid;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.info-card {
+  background: rgba(50, 112, 166, 0.1);
+  border: 1px solid rgba(50, 112, 166, 0.3);
+  border-radius: 10px;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.info-card:hover {
+  background: rgba(50, 112, 166, 0.2);
+  transform: translateX(5px);
+}
+
+.info-label {
+  font-size: 11px;
+  color: #3270a6;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.info-value {
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+}
+
+.photo-container {
+  margin: 25px 0;
+  text-align: center;
+}
+
+.photo-container img {
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(50, 112, 166, 0.4);
+  border: 2px solid #3270a6;
+}
+
+.map-container {
+  margin: 25px 0;
+}
+
+.map-container #modalMap {
+  height: 220px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(50, 112, 166, 0.4);
+  border: 2px solid #3270a6;
+}
+
+.close-btn {
+  background: linear-gradient(135deg, #3270a6 0%, #2557a6 100%);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(50, 112, 166, 0.6);
+}
+
+.loader {
+  border: 3px solid rgba(50, 112, 166, 0.3);
+  border-top: 3px solid #3270a6;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
